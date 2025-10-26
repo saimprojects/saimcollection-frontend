@@ -166,12 +166,12 @@ export default function Dashboard() {
                 </motion.a>
               ) : (
                 <span className="text-gray-600 dark:text-gray-400">
-                  No download available
+                  You Will Recieve an Email with this Product within 24 Hours
                 </span>
               )
             ) : (
               <span className="text-gray-600 dark:text-gray-400">
-                No download available
+                You Will Recieve an Email with this Product within 24 Hours
               </span>
             )}
           </motion.div>

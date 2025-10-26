@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
+import { motion } from 'framer-motion';
 
 function PaymentPopup({ productId, onClose }) {
   const [transactionId, setTransactionId] = useState('');
@@ -23,9 +24,21 @@ function PaymentPopup({ productId, onClose }) {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40" onClick={onClose}></div>
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-[400px] shadow-lg">
+      <motion.div
+        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      ></motion.div>
+
+      <motion.div
+        className="fixed inset-0 flex items-center justify-center z-50"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+      >
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-[400px] shadow-lg relative">
           <h2 className="text-xl font-bold mb-4">Manual Payment</h2>
           <div className="mb-4 text-gray-900 dark:text-gray-100 space-y-1">
             <p><strong>Bank:</strong> NayaPay</p>
@@ -41,13 +54,15 @@ function PaymentPopup({ productId, onClose }) {
             className="w-full p-2 border rounded mb-4 dark:bg-gray-700 dark:text-gray-100"
           />
           <div className="flex justify-end gap-2">
-            <button onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
-            <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white rounded" disabled={loading}>
+            <button onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
+              Cancel
+            </button>
+            <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
@@ -85,28 +100,36 @@ export default function ProductDetail() {
     fetchSuggested();
   }, [slug]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
 
   const Card = ({ item }) => (
-    <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 transition-all duration-300"
+    >
       {item.file && <img src={item.file} alt={item.title} className="w-full h-64 object-cover rounded mb-3" />}
       <h3 className="font-semibold mb-1">{item.title}</h3>
-      <p className="text-gray-700 dark:text-gray-300 mb-2">{item.price ? `$${item.price}` : ''}</p>
-      <Link to={`/products/${item.slug}`} className="px-3 py-1 bg-blue-600 text-white rounded">View</Link>
-    </div>
+      {item.price && <p className="text-gray-700 dark:text-gray-300 mb-2">${item.price}</p>}
+      <Link to={`/products/${item.slug}`} className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">View</Link>
+    </motion.div>
   );
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{product.title}</h1>
+    <motion.div className="space-y-6 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.h1 className="text-3xl font-bold" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{product.title}</motion.h1>
 
-      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col md:flex-row gap-6">
+      <motion.div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col md:flex-row gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
         {product.file && (
-          <img
+          <motion.img
             src={product.file}
             alt={product.title}
             className="w-full md:w-96 h-96 object-cover rounded"
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
             onError={(e) => (e.target.src = 'https://via.placeholder.com/500')}
           />
         )}
@@ -115,14 +138,14 @@ export default function ProductDetail() {
           <div className="flex items-center justify-between">
             <span className="font-semibold text-lg">${product.price}</span>
             <div className="flex gap-2">
-              <button onClick={() => setShowPayment(true)} className="px-4 py-2 bg-green-600 text-white rounded-lg">Buy</button>
+              <button onClick={() => setShowPayment(true)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Buy</button>
               {product.file && (
-                <a href={product.file} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-gray-600 text-white rounded-lg">View File</a>
+                <a href={product.file} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">View File</a>
               )}
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {suggested.length > 0 && (
         <div>
@@ -134,6 +157,6 @@ export default function ProductDetail() {
       )}
 
       {showPayment && <PaymentPopup productId={product.id} onClose={() => setShowPayment(false)} />}
-    </div>
+    </motion.div>
   );
 }

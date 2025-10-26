@@ -20,7 +20,7 @@ function Navbar() {
           to="/"
           className="text-2xl font-bold text-white hover:text-gray-300 transition-colors duration-300"
         >
-          Digital Products
+          Saim Collection (Digital Products)
         </Link>
         <div className="flex items-center space-x-6">
           <Link
